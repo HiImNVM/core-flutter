@@ -1,7 +1,7 @@
 name: nvm
-description: A new Flutter package project.
+description: The library support to coding flutter's project easy.
 version: 0.0.1
-author:
+author: MIT
 homepage:
 
 environment:
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_redux: 0.5.2
 
 dev_dependencies:
   flutter_test:
