@@ -6,32 +6,36 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 abstract class IReducer {
-  String name;
+  @required
+  final String name;
+
+  IReducer({this.name});
+
   dynamic initialState();
-  dynamic initialReducer(dynamic preState, dynamic action);
 }
 
 class Nvm extends MaterialApp {
   List<IReducer> reducers;
+  Widget home;
   Store<dynamic> _store;
 
-  Nvm({this.reducers}) : super() {
+  Nvm({this.reducers, this.home}) : super(home: home) {
     final Map<String, dynamic> initialState = Map<String, dynamic>();
 
     reducers.forEach((IReducer aReducer) {
       final String nameReducer = aReducer.name;
-      final dynamic reducer =  aReducer.initialState(); 
+      final dynamic reducer = aReducer.initialState();
 
       initialState.putIfAbsent(nameReducer, () => reducer);
     });
 
     this._store = Store<dynamic>(
-      (dynamic preState, dynamic action) => 
-      reducers.firstWhere((IReducer aReducer) => 
-      aReducer., orElse: () => null),
+      (dynamic state, dynamic action) => state,
       initialState: initialState,
     );
   }
+
+
 }
 
 // class NvmStore extends StatelessWidget {
