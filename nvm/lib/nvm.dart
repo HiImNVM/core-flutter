@@ -5,24 +5,26 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-abstract class IReducer {
+abstract class INvmReducer {
   @required
   final String name;
 
-  IReducer({this.name});
+  INvmReducer({this.name});
 
   dynamic initialState();
 }
 
-class Nvm extends MaterialApp {
-  List<IReducer> reducers;
+
+class NvmApp extends MaterialApp {
+  List<INvmReducer> reducers;
   Widget home;
   Store<dynamic> _store;
+  Map<String, MaterialPageRoute> routers;
 
-  Nvm({this.reducers, this.home}) : super(home: home) {
+  NvmApp({this.reducers, this.home, this.routers}) : super(home: home) {
     final Map<String, dynamic> initialState = Map<String, dynamic>();
 
-    reducers.forEach((IReducer aReducer) {
+    reducers.forEach((INvmReducer aReducer) {
       final String nameReducer = aReducer.name;
       final dynamic reducer = aReducer.initialState();
 
@@ -34,19 +36,4 @@ class Nvm extends MaterialApp {
       initialState: initialState,
     );
   }
-
-
 }
-
-// class NvmStore extends StatelessWidget {
-//   final MaterialApp child;
-//   final Store<dynamic> store;
-
-//   NvmStore({this.child, this.store});
-
-//   @override
-//   Widget build(BuildContext context) => StoreProvider<dynamic>(
-//         store: this.store,
-//         child: this.child.r,
-//       );
-// }

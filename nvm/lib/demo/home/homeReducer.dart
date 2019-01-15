@@ -1,6 +1,6 @@
 import 'package:nvm/nvm.dart';
 
-class HomeReducer implements IReducer {
+class HomeReducer implements INvmReducer {
   @override
   final String name;
   final String value;
