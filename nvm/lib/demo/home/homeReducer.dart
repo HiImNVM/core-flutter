@@ -11,5 +11,8 @@ class HomeReducer implements INvmReducer {
   });
 
   @override
-  dynamic initialState() => null;
+  INvmReducer initialState() {
+    // TODO: implement initialState
+    return null;
+  }
 }

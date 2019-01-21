@@ -11,15 +11,22 @@ abstract class INvmReducer {
 
   INvmReducer({this.name});
 
-  dynamic initialState();
+  INvmReducer initialState();
 }
 
-
+@immutable
 class NvmApp extends MaterialApp {
-  List<INvmReducer> reducers;
-  Widget home;
+  @required
+  final List<INvmReducer> reducers;
+
+  @required
+  final Widget home;
+
+  @required
+  final Map<String, MaterialPageRoute> routers;
+
   Store<dynamic> _store;
-  Map<String, MaterialPageRoute> routers;
+
 
   NvmApp({this.reducers, this.home, this.routers}) : super(home: home) {
     final Map<String, dynamic> initialState = Map<String, dynamic>();
@@ -35,5 +42,7 @@ class NvmApp extends MaterialApp {
       (dynamic state, dynamic action) => state,
       initialState: initialState,
     );
+
+    this.routers
   }
 }
