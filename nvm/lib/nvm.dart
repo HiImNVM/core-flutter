@@ -3,6 +3,7 @@ library nvm;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:nvm/api.dart';
 import 'package:redux/redux.dart';
 
 abstract class INvmReducer {
@@ -27,10 +28,8 @@ class NvmApp extends MaterialApp {
 
   Store<dynamic> _store;
 
-
   NvmApp({this.reducers, this.home, this.routers}) : super(home: home) {
     final Map<String, dynamic> initialState = Map<String, dynamic>();
-
     reducers.forEach((INvmReducer aReducer) {
       final String nameReducer = aReducer.name;
       final dynamic reducer = aReducer.initialState();
@@ -42,7 +41,5 @@ class NvmApp extends MaterialApp {
       (dynamic state, dynamic action) => state,
       initialState: initialState,
     );
-
-    this.routers
   }
 }
