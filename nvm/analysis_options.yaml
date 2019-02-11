@@ -47,7 +47,6 @@ linter:
     - annotate_overrides
     - avoid_as
     - avoid_bool_literals_in_conditional_expressions
-    - avoid_classes_with_only_static_members
     - avoid_double_and_int_checks
     - avoid_field_initializers_in_const_classes
     - avoid_init_to_null
