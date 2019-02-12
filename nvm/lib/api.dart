@@ -14,18 +14,18 @@ class NvmAPI {
         'Content-Type': 'application/json'
       }]) async {
     if (method == null) {
-      throw Exception('The method is null');
+      throw Exception('The method is null or empty');
     }
 
     if (url == null || url.isEmpty) {
       throw Exception('The URL is null or empty');
     }
 
-    if (body == null) {
+    if (body == null || body.isEmpty) {
       throw Exception('The body is null or empty');
     }
 
-    if (headers == null) {
+    if (headers == null || headers.isEmpty) {
       throw Exception('The headers is null or empty');
     }
 
