@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart';
 
@@ -11,7 +12,7 @@ class NvmAPI {
       String url = '',
       Map<dynamic, dynamic> body,
       Map<String, String> headers = const {
-        'Content-Type': 'application/json'
+        HttpHeaders.contentTypeHeader: 'application/json'
       }]) async {
     if (method == null) {
       throw Exception('The method is null or empty');

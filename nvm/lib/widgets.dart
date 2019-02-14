@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 typedef ErrorBuilder = Widget Function(BuildContext context, String error);
 typedef LoadingBuilder = Widget Function(BuildContext context);
 typedef SuccessBuilder = Widget Function(BuildContext context, dynamic data);
-
 class NvmFutureBuilder<T> extends FutureBuilder<T> {
   @override
   final Future<T> future;
@@ -35,8 +34,8 @@ class NvmFutureBuilder<T> extends FutureBuilder<T> {
             });
 }
 
-typedef ResultWillPop = bool Function(bool isWillPop);
 
+typedef ResultWillPop = bool Function(bool isWillPop);
 class NvmWillPopScope extends WillPopScope {
   @override
   final Widget child;
@@ -55,7 +54,7 @@ class NvmWillPopScope extends WillPopScope {
               final bool result = await showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (context) => AlertDialog(
+                  builder: (BuildContext context) => AlertDialog(
                         title: Text('Bạn có muốn thoát khỏi ứng dụng?'),
                         actions: <Widget>[
                           FlatButton(
