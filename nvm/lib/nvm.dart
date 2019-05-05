@@ -1,45 +1,33 @@
 library nvm;
 
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:nvm/api.dart';
-import 'package:redux/redux.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 
-abstract class INvmReducer {
-  @required
-  final String name;
+export 'api.dart';
+export 'widgets.dart';
+export 'utils.dart';
 
-  INvmReducer({this.name});
+enum BuildMode { Debug, Product }
 
-  INvmReducer initialState();
-}
+class Nvm {
+  static final Nvm _instance = Nvm();
+  static Nvm getInstance() => _instance;
 
-@immutable
-class NvmApp extends MaterialApp {
-  @required
-  final List<INvmReducer> reducers;
+  BuildMode getBuildMode() => bool.fromEnvironment('dart.vm.product')
+      ? BuildMode.Product
+      : BuildMode.Debug;
 
-  @required
-  final Widget home;
+  dynamic global;
 
-  @required
-  final Map<String, MaterialPageRoute> routers;
-
-  Store<dynamic> _store;
-
-  NvmApp({this.reducers, this.home, this.routers}) : super(home: home) {
-    final Map<String, dynamic> initialState = Map<String, dynamic>();
-    reducers.forEach((INvmReducer aReducer) {
-      final String nameReducer = aReducer.name;
-      final dynamic reducer = aReducer.initialState();
-
-      initialState.putIfAbsent(nameReducer, () => reducer);
-    });
-
-    this._store = Store<dynamic>(
-      (dynamic state, dynamic action) => state,
-      initialState: initialState,
-    );
+  Future<dynamic> readLocales(String path) async {
+    try {
+      if (path == null || path.isEmpty) {
+        throw Exception('The path is null or empty.');
+      }
+      final String result = await rootBundle.loadString('$path');
+      return json.decode(result);
+    } catch (e) {
+      throw Exception('Read locales is something went wrong.');
+    }
   }
 }
