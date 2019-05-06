@@ -2,7 +2,7 @@ name: nvm
 description: The library support to coding flutter's project easy.
 version: 0.0.1
 author: MIT
-homepage:
+homepage: https://github.com/HiImNVM/core-flutter
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
