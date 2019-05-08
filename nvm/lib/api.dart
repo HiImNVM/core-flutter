@@ -10,6 +10,7 @@ class NvmAPI {
   static NvmAPI getInstance() => _instance;
 
   int timeOut = 5;
+  String preURL = '';
 
   Future<dynamic> call(
       [eMethod method = eMethod.GET,
@@ -35,7 +36,7 @@ class NvmAPI {
     }
 
     Response response;
-    final String newUrl = '$url';
+    final String newUrl = Uri.encodeFull(this.preURL + '$url');
     try {
       if (eMethod.GET == method) {
         response = await get(newUrl, headers: headers)
