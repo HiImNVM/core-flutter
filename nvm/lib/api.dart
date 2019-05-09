@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart';
 
-enum eMethod { GET, POST, PUT, DELETE }
+enum MethodEnum { GET, POST, PUT, DELETE }
 
 class NvmAPI {
   static final NvmAPI _instance = NvmAPI();
@@ -13,7 +13,7 @@ class NvmAPI {
   String preURL = '';
 
   Future<dynamic> call(
-      [eMethod method = eMethod.GET,
+      [MethodEnum method = MethodEnum.GET,
       String url = '',
       Map<dynamic, dynamic> body,
       Map<String, String> headers = const {
@@ -38,16 +38,16 @@ class NvmAPI {
     Response response;
     final String newUrl = Uri.encodeFull(this.preURL + '$url');
     try {
-      if (eMethod.GET == method) {
+      if (MethodEnum.GET == method) {
         response = await get(newUrl, headers: headers)
             .timeout(Duration(seconds: timeOut));
-      } else if (eMethod.POST == method) {
+      } else if (MethodEnum.POST == method) {
         response = await post(newUrl, headers: headers, body: jsonEncode(body))
             .timeout(Duration(seconds: timeOut));
-      } else if (eMethod.PUT == method) {
+      } else if (MethodEnum.PUT == method) {
         response = await put(newUrl, headers: headers, body: jsonEncode(body))
             .timeout(Duration(seconds: timeOut));
-      } else if (eMethod.DELETE == method) {
+      } else if (MethodEnum.DELETE == method) {
         response = await delete(newUrl, headers: headers)
             .timeout(Duration(seconds: timeOut));
       } else {
