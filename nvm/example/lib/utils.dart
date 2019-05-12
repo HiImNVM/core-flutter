@@ -1,4 +1,4 @@
-import 'package:example/model/index.dart';
+import 'package:example/models/index.dart';
 import 'package:nvm/nvm.dart';
 
 class Utils {

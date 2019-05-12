@@ -1,6 +1,6 @@
 import 'package:example/config.dart';
 import 'package:example/constants.dart';
-import 'package:example/model/index.dart';
+import 'package:example/models/index.dart';
 import 'package:flutter/services.dart';
 import 'package:nvm/nvm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,8 +10,8 @@ void _setupENV(Nvm app) {
   final BuildMode buildMode = Nvm.getInstance().getBuildMode();
 
   final String nameENV = buildMode == BuildMode.Product
-      ? CONFIG_ENVIRONMENT_RELEASE
-      : CONFIG_ENVIRONMENT_DEV;
+      ? CONSTANT_ENVIRONMENT_RELEASE
+      : CONSTANT_ENVIRONMENT_DEV;
 
   appModel.env = configENV[nameENV];
 
@@ -26,7 +26,7 @@ void _setupApp(Nvm app) {
 
 void _setupRequest(Nvm app) {
   final AppModel appModel = (app.global as AppModel);
-  NvmAPI.getInstance().preURL = appModel.env[CONFIG_SERVER_URL_NAME];
+  NvmAPI.getInstance().preURL = appModel.env[CONSTANT_SERVER_URL_NAME];
   NvmAPI.getInstance().timeOut = configRequestTimeOut;
   appModel.request = NvmAPI.getInstance();
 }

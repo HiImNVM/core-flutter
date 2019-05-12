@@ -1,5 +1,13 @@
 {
     "ERROR_SOMETHING_WROMG": "Đã có lỗi xảy ra. Vui lòng thử lại!",
-    "HOME_TITLE": "Trang chủ",
-    "LOGIN_TITLE": "Đăng nhập"
+    "LOGIN_SCREEN_NAME_HEADER": "NVM",
+    "LOGIN_SCREEN_TITLE_USERNAME": "Tài khoản",
+    "LOGIN_SCREEN_TITLE_PASSWORD": "Mật khẩu",
+    "LOGIN_SCREEN_TITLE_REMEMBERME": "Lưu đăng nhập",
+    "LOGIN_SCREEN_TITLE_FORGOT_PASSWORD": "Quên mật khẩu?",
+    "LOGIN_SCREEN_NAME_BUTTON_LOGIN": "Đăng nhập",
+    "LOGIN_SCREEN_TITLE_DONT_HAVE_AN_ACCOUNT_YET": "Chưa có tài khoản?",
+    "LOGIN_SCREEN_TITLE_SIGN_UP_NOW": "ĐĂNG KÝ NGAY",
+    "LOGIN_SCREEN_USERNAME_NOT_NULL_OR_EMPTY": "Tài khoản không được rỗng. Vui lòng thử lại sau!",
+    "LOGIN_SCREEN_PASSWORD_NOT_NULL_OR_EMPTY": "Mật khẩu không được rỗng. Vui lòng thử lại sau!"
 }

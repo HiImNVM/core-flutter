@@ -1,4 +1,4 @@
-import 'package:example/model/index.dart';
+import 'package:example/models/index.dart';
 import 'package:example/screens/flashScreen/index.dart';
 import 'package:example/screens/homeScreen/index.dart';
 import 'package:example/screens/loginScreen/index.dart';
@@ -19,8 +19,8 @@ void main() async {
   await Future.wait(
       setupAll(app).map((fn) async => await Utils.getInstance().futureFn(fn)));
 
-  String title = (app.global as AppModel).env[CONFIG_APP_NAME];
-  bool mode = (app.global as AppModel).env[CONFIG_IS_DEBUG];
+  String title = (app.global as AppModel).env[CONSTANT_APP_NAME];
+  bool mode = (app.global as AppModel).env[CONSTANT_IS_DEBUG];
   Widget ownApp = AppWidget();
   print(' Init AppWidget succeed and START ===> ');
 
@@ -50,10 +50,10 @@ class AppWidget extends StatelessWidget {
         appModel.mediaQueryData = MediaQuery.of(context);
 
         String pathLocale =
-            appModel.sharedPreferences.getString(CONFIG_STORE_LOCALE);
+            appModel.sharedPreferences.getString(CONSTANT_STORE_LOCALE);
 
         if (pathLocale == null || pathLocale.isEmpty) {
-          pathLocale = CONFIG_LOCALES_EN;
+          pathLocale = CONSTANT_LOCALES_EN;
         }
 
         await Utils.getInstance().changeLocale(pathLocale);

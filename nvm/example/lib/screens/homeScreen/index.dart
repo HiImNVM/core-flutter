@@ -1,6 +1,6 @@
 import 'package:example/components/loader/index.dart';
 import 'package:example/constants.dart';
-import 'package:example/model/index.dart';
+import 'package:example/models/index.dart';
 import 'package:example/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:nvm/nvm.dart';
@@ -21,7 +21,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       appBar: AppBar(),
       body: Container(
         child: Center(
-          child: Text('${this._localisedValues[LOCALES_HOME_TITLE]}'),
+          child: Text('Home'),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -37,7 +37,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         barrierDismissible: false,
         builder: (context) => new Center(child: LoadingWidget()));
 
-    Utils.getInstance().changeLocale(CONFIG_LOCALES_VI).then((_) {
+    Utils.getInstance().changeLocale(CONSTANT_LOCALES_VI).then((_) {
       Navigator.pop(context);
       this.setState(() {});
     });

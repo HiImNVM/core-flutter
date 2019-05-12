@@ -1,5 +1,13 @@
 {
     "ERROR_SOMETHING_WROMG": "Something went wrong. Please try again!",
-    "HOME_TITLE": "Home",
-    "LOGIN_TITLE": "Login"
+    "LOGIN_SCREEN_NAME_HEADER": "NVM",
+    "LOGIN_SCREEN_TITLE_USERNAME": "Username",
+    "LOGIN_SCREEN_TITLE_PASSWORD": "Password",
+    "LOGIN_SCREEN_TITLE_REMEMBERME": "Remember Me",
+    "LOGIN_SCREEN_TITLE_FORGOT_PASSWORD": "Forgot Password?",
+    "LOGIN_SCREEN_NAME_BUTTON_LOGIN": "Login",
+    "LOGIN_SCREEN_TITLE_DONT_HAVE_AN_ACCOUNT_YET": "Don/'t have an account yet?",
+    "LOGIN_SCREEN_TITLE_SIGN_UP_NOW": "SIGN UP NOW",
+    "LOGIN_SCREEN_USERNAME_NOT_NULL_OR_EMPTY": "Username is not null or empty. Please try again!",
+    "LOGIN_SCREEN_PASSWORD_NOT_NULL_OR_EMPTY": "Password is not null or empty. Please try again!"
 }

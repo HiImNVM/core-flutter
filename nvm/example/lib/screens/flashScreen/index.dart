@@ -21,7 +21,8 @@ class FlashWidget extends StatelessWidget {
                       CircleAvatar(
                         backgroundColor: Colors.blue,
                         radius: 50,
-                        backgroundImage: AssetImage('$CONFIG_IMAGES_APP_ICON'),
+                        backgroundImage:
+                            AssetImage('$CONSTANT_IMAGES_APP_ICON'),
                       ),
                       Padding(
                         padding: EdgeInsets.only(top: 10),
