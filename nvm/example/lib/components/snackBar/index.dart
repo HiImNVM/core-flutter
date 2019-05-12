@@ -18,7 +18,7 @@ class SnackBarStatusWidget extends SnackBar {
   }) : super(
           key: key,
           content: _renderStatus(statusEnum, text),
-          duration: Duration(seconds: 10),
+          duration: Duration(seconds: 7),
           backgroundColor: _renderBackgroundColorStatus(statusEnum),
         );
 }
@@ -46,14 +46,14 @@ Widget _renderStatus(StatusEnum statusEnum, String text) {
 
   return Row(
     children: <Widget>[
-      Expanded(
-        flex: 0,
-        child: icon,
+      Expanded(flex: 0, child: icon),
+      SizedBox(
+        width: 10,
       ),
       Expanded(
         flex: 1,
         child: Text(
-          '    $text',
+          '$text',
           style: textStyle,
         ),
       ),
