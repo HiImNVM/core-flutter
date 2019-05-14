@@ -1,7 +1,4 @@
-import 'package:example/components/loader/index.dart';
-import 'package:example/constants.dart';
 import 'package:example/models/index.dart';
-import 'package:example/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:nvm/nvm.dart';
 
@@ -17,6 +14,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   Widget build(BuildContext context) {
     this._localisedValues =
         (Nvm.getInstance().global as AppModel).localisedValues;
+
     return Scaffold(
       appBar: AppBar(),
       body: Container(
@@ -24,22 +22,6 @@ class _HomeWidgetState extends State<HomeWidget> {
           child: Text('Home'),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => this._switchLocale(context),
-        child: Icon(Icons.refresh),
-      ),
     );
-  }
-
-  void _switchLocale(context) async {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => new Center(child: LoadingWidget()));
-
-    Utils.getInstance().changeLocale(CONSTANT_LOCALES_VI).then((_) {
-      Navigator.pop(context);
-      this.setState(() {});
-    });
   }
 }

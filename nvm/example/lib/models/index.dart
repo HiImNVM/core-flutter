@@ -8,6 +8,7 @@ class AppModel {
   MediaQueryData mediaQueryData;
   Map<String, dynamic> env;
   NvmAPI request;
+  RouteFactory routes;
 
   AppModel({
     this.sharedPreferences,
@@ -15,5 +16,6 @@ class AppModel {
     this.mediaQueryData,
     this.env,
     this.request,
+    this.routes,
   });
 }

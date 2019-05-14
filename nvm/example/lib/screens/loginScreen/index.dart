@@ -3,7 +3,6 @@ import 'package:example/components/snackBar/index.dart';
 import 'package:example/constants.dart';
 import 'package:example/models/index.dart';
 import 'package:example/screens/loginScreen/constants.dart';
-import 'package:example/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -281,7 +280,10 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   void _login() async {
-    final String error = this._validateUserNameAndPassword();
+    final String userName = this._userNameCtrl.text;
+    final String password = this._passwordCtrl.text;
+
+    final String error = this._validateUserNameAndPassword(userName, password);
 
     if (error.isNotEmpty) {
       this._scaffoldKey.currentState.showSnackBar(
@@ -299,14 +301,31 @@ class _LoginWidgetState extends State<LoginWidget> {
       builder: (context) => LoadingWidget(),
     );
 
-    final dynamic result =
-        await (Nvm.getInstance().global as AppModel).request.call(
-              url: '/users',
-            );
+    // TODO: Hardcode to work
+    final String userNameExpected = 'admin';
+    final String passwordExpected = 'admin';
 
+    final bool result = await Future.delayed(Duration(seconds: 5), () {
+      if (this._userNameCtrl.text == userNameExpected &&
+          this._passwordCtrl.text == passwordExpected) {
+        return true;
+      }
+      return false;
+    });
     Navigator.pop(context);
 
-    print('$result');
+    if (!result) {
+      this._scaffoldKey.currentState.showSnackBar(
+            SnackBarStatusWidget(
+              statusEnum: StatusEnum.error,
+              text:
+                  '${this._localisedValues[CONSTANT_LOGIN_SCREEN_USERNAME_OR_PASSWORD_FAILED]}',
+            ),
+          );
+      return;
+    }
+
+    Navigator.of(context).pushReplacementNamed('/home');
   }
 
   void _loginWithFB() {}
@@ -317,13 +336,11 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   void _navigateSignUpScreen() {}
 
-  String _validateUserNameAndPassword() {
-    final String userName = this._userNameCtrl.text;
+  String _validateUserNameAndPassword(String userName, String password) {
     if (userName.isEmpty) {
       return '${this._localisedValues[CONSTANT_LOGIN_SCREEN_USERNAME_NOT_NULL_OR_EMPTY]}';
     }
 
-    final String password = this._passwordCtrl.text;
     if (password.isEmpty) {
       return '${this._localisedValues[CONSTANT_LOGIN_SCREEN_PASSWORD_NOT_NULL_OR_EMPTY]}';
     }

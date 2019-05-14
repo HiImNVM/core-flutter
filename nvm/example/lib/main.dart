@@ -21,6 +21,8 @@ void main() async {
 
   String title = (app.global as AppModel).env[CONSTANT_APP_NAME];
   bool mode = (app.global as AppModel).env[CONSTANT_IS_DEBUG];
+  RouteFactory routes = (app.global as AppModel).routes;
+
   Widget ownApp = AppWidget();
   print(' Init AppWidget succeed and START ===> ');
 
@@ -28,6 +30,7 @@ void main() async {
     title: title,
     debugShowCheckedModeBanner: mode,
     home: ownApp,
+    onGenerateRoute: routes,
   ));
 }
 

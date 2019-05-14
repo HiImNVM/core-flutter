@@ -1,5 +1,7 @@
 import 'package:example/constants.dart';
+import 'package:example/screens/homeScreen/index.dart';
 import 'package:flutter/services.dart';
+import 'package:example/screens/loginScreen/index.dart';
 
 Map<String, dynamic> configENV = {
   '$CONSTANT_ENVIRONMENT_DEV': {
@@ -17,4 +19,10 @@ Map<String, dynamic> configENV = {
 };
 
 List<DeviceOrientation> configOrientation = [DeviceOrientation.portraitUp];
+
 int configRequestTimeOut = 8;
+
+Map<String, Function> configRoutes = {
+  '/home': () => HomeWidget(),
+  '/login': () => LoginWidget(),
+};

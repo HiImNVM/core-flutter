@@ -9,5 +9,6 @@
     "LOGIN_SCREEN_TITLE_DONT_HAVE_AN_ACCOUNT_YET": "Don/'t have an account yet?",
     "LOGIN_SCREEN_TITLE_SIGN_UP_NOW": "SIGN UP NOW",
     "LOGIN_SCREEN_USERNAME_NOT_NULL_OR_EMPTY": "Username is not null or empty. Please try again!",
-    "LOGIN_SCREEN_PASSWORD_NOT_NULL_OR_EMPTY": "Password is not null or empty. Please try again!"
+    "LOGIN_SCREEN_PASSWORD_NOT_NULL_OR_EMPTY": "Password is not null or empty. Please try again!",
+    "LOGIN_SCREEN_USERNAME_OR_PASSWORD_FAILED": "Username or Password wrong. Please try again!"
 }
