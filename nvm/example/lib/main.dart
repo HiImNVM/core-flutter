@@ -47,7 +47,7 @@ class AppWidget extends StatelessWidget {
       );
 
   Future<dynamic> _loadResource(context) async {
-    return await Future.delayed(Duration(seconds: 10), () async {
+    return await Future.delayed(Duration(seconds: 5), () async {
       try {
         AppModel appModel = (Nvm.getInstance().global as AppModel);
         appModel.mediaQueryData = MediaQuery.of(context);

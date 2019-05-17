@@ -3,6 +3,7 @@ import 'package:example/components/snackBar/index.dart';
 import 'package:example/constants.dart';
 import 'package:example/models/index.dart';
 import 'package:example/screens/loginScreen/constants.dart';
+import 'package:example/screens/loginScreen/type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -14,15 +15,20 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-  final TextEditingController _userNameCtrl = TextEditingController();
-  final TextEditingController _passwordCtrl = TextEditingController();
+  final TextEditingController _userNameCtrl =
+      TextEditingController(text: 'admin');
+  final TextEditingController _passwordCtrl =
+      TextEditingController(text: 'admin');
+  final TextEditingController _newUserNameCtrl = TextEditingController();
+  final TextEditingController _newPasswordCtrl = TextEditingController();
+  final TextEditingController _confirmPasswordCtrl = TextEditingController();
 
   final Size _ownSize =
       (Nvm.getInstance().global as AppModel).mediaQueryData.size;
-
-  dynamic _localisedValues;
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  List<Tabbar> _tabs;
+  dynamic _localisedValues;
   bool _isRememberMe, _isShowPassword;
 
   @override
@@ -31,6 +37,26 @@ class _LoginWidgetState extends State<LoginWidget> {
 
     this._isRememberMe = false;
     this._isShowPassword = false;
+    this._localisedValues =
+        (Nvm.getInstance().global as AppModel).localisedValues;
+
+    final double heightContainerTab = this._ownSize.height * 0.3;
+
+    this._tabs = [
+      Tabbar(
+        tab: Tab(
+          text: '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_SIGN_IN]}',
+        ),
+        widget: this._renderTabSignIn(heightContainerTab),
+      ),
+      Tabbar(
+        tab: Tab(
+          text:
+              '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_REGISTER]}',
+        ),
+        widget: this._renderTabRegister(heightContainerTab),
+      ),
+    ];
   }
 
   Widget _renderBody(context) {
@@ -45,14 +71,8 @@ class _LoginWidgetState extends State<LoginWidget> {
         child: Column(
           children: <Widget>[
             this._renderHeader(),
-            Container(
-              margin: EdgeInsets.only(top: this._ownSize.height * 0.1),
-              child: this._renderContent(),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: this._ownSize.height * 0.04),
-              child: this._renderFooter(),
-            ),
+            this._renderContent(),
+            this._renderFooter(),
           ],
         ),
       ),
@@ -70,50 +90,163 @@ class _LoginWidgetState extends State<LoginWidget> {
     );
   }
 
+  List<Tab> _renderTabs() => this._tabs.map((aTab) => aTab.tab).toList();
+
+  List<Widget> _renderWidgets() =>
+      this._tabs.map((aTab) => aTab.widget).toList();
+
+  Widget _renderTabSignIn(double heightContainerTab) {
+    final double heightOneColumn = (heightContainerTab - 30) / 4;
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: this._renderUserName(heightOneColumn),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: this._renderPassword(heightOneColumn),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 15),
+          child: this._renderRememberAndForgot(heightOneColumn),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        this._renderButtonLogin(heightOneColumn),
+      ],
+    );
+  }
+
+  Widget _renderTabRegister(double heightContainerTab) {
+    final double heightOneColumn = (heightContainerTab - 30) / 4;
+    final String hintNameNewUserName =
+        '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_USERNAME]}';
+    final String hintNamePassword =
+        '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_PASSWORD]}';
+    final String hintNameConfirmPassword =
+        '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_CONFIRM_PASSWORD]}';
+
+    return Column(
+      children: <Widget>[
+        Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            height: heightOneColumn,
+            child: TextField(
+                obscureText: true,
+                controller: this._newUserNameCtrl,
+                decoration: InputDecoration(
+                  hintText: hintNameNewUserName,
+                  labelText: hintNameNewUserName,
+                  prefixIcon: Icon(Icons.account_circle),
+                ),
+                textInputAction: TextInputAction.done)),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            height: heightOneColumn,
+            child: TextField(
+                obscureText: true,
+                controller: this._newPasswordCtrl,
+                decoration: InputDecoration(
+                  hintText: hintNamePassword,
+                  labelText: hintNamePassword,
+                  prefixIcon: Icon(Icons.vpn_key),
+                ),
+                textInputAction: TextInputAction.done)),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            height: heightOneColumn,
+            child: TextField(
+                obscureText: true,
+                controller: this._confirmPasswordCtrl,
+                decoration: InputDecoration(
+                  hintText: hintNameConfirmPassword,
+                  labelText: hintNameConfirmPassword,
+                  prefixIcon: Icon(Icons.vpn_key),
+                ),
+                textInputAction: TextInputAction.done)),
+        SizedBox(
+          height: 10,
+        ),
+        Container(
+          height: heightOneColumn,
+          width: double.infinity,
+          child: FlatButton(
+            color: Colors.blue,
+            onPressed: this._registerAccount,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(
+              '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_REGISTER]}',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _renderContent() {
+    final double heightContainerTab = this._ownSize.height * 0.3;
+    final int totalTab = this._tabs.length;
+    final List<Tab> tabs = this._renderTabs();
+    final List<Widget> widgetsOfTabView = this._renderWidgets();
+
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(color: Colors.grey[50], blurRadius: 5),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: this._renderUserName(),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: this._renderPassword(),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: this._renderRememberAndForgot(),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          this._renderButtonLogin(),
-        ],
+      margin: EdgeInsets.only(top: this._ownSize.height * 0.08),
+      child: DefaultTabController(
+        length: totalTab,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              color: Colors.black,
+              child: TabBar(
+                labelColor: Colors.white,
+                labelStyle: TextStyle(fontSize: 20),
+                tabs: tabs,
+              ),
+            ),
+            Container(
+              height: heightContainerTab,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(color: Colors.grey[50], blurRadius: 5),
+                ],
+              ),
+              child: TabBarView(
+                children: widgetsOfTabView,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _renderButtonLogin() {
-    final double heightButtonLogin = this._ownSize.height * 0.07;
+  Widget _renderButtonLogin(double heightOneColumn) {
     return Container(
+      height: heightOneColumn,
       width: double.infinity,
-      height: heightButtonLogin,
       child: FlatButton(
         color: Colors.blue,
         onPressed: this._login,
@@ -121,7 +254,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           borderRadius: BorderRadius.circular(5),
         ),
         child: Text(
-          'Login',
+          '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_SIGN_IN]}',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -131,36 +264,45 @@ class _LoginWidgetState extends State<LoginWidget> {
     );
   }
 
-  Widget _renderUserName() {
+  Widget _renderUserName(double heightOneColumn) {
     final String hintName =
         '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_USERNAME]}';
-    return TextField(
-        controller: this._userNameCtrl,
-        decoration: InputDecoration(
-          hintText: hintName,
-          labelText: hintName,
-          prefixIcon: Icon(Icons.account_circle),
-        ),
-        textInputAction: TextInputAction.done);
-  }
-
-  Widget _renderPassword() {
-    final String hintName =
-        '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_PASSWORD]}';
-    return PasswordWidget(
-      hintName: hintName,
-      isShowPassword: this._isShowPassword,
-      passwordCtrl: this._passwordCtrl,
+    return Container(
+      height: heightOneColumn,
+      child: TextField(
+          controller: this._userNameCtrl,
+          decoration: InputDecoration(
+            hintText: hintName,
+            labelText: hintName,
+            prefixIcon: Icon(Icons.account_circle),
+          ),
+          textInputAction: TextInputAction.done),
     );
   }
 
-  Widget _renderRememberAndForgot() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        this._renderRememberMe(),
-        this._renderForgot(),
-      ],
+  Widget _renderPassword(double heightOneColumn) {
+    final String hintName =
+        '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_PASSWORD]}';
+    return Container(
+      height: heightOneColumn,
+      child: PasswordWidget(
+        hintName: hintName,
+        isShowPassword: this._isShowPassword,
+        passwordCtrl: this._passwordCtrl,
+      ),
+    );
+  }
+
+  Widget _renderRememberAndForgot(double heightOneColumn) {
+    return Container(
+      height: heightOneColumn,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          this._renderRememberMe(),
+          this._renderForgot(),
+        ],
+      ),
     );
   }
 
@@ -222,56 +364,36 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   Widget _renderFooter() {
-    return Column(
-      children: <Widget>[
-        Text(
-          '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_DONT_HAVE_AN_ACCOUNT_YET]}',
-          style: TextStyle(fontSize: 15, color: Colors.grey),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        GestureDetector(
-          onTap: this._navigateSignUpScreen,
-          child: Text(
-            '${this._localisedValues[CONSTANT_LOGIN_SCREEN_TITLE_SIGN_UP_NOW]}',
+    return Container(
+      margin: EdgeInsets.only(top: this._ownSize.height * 0.04),
+      child: Column(
+        children: <Widget>[
+          Text(
+            '---OR---',
             style: TextStyle(
               fontSize: 15,
-              color: Colors.blue,
               fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-        SizedBox(
-          height: this._ownSize.height * 0.03,
-        ),
-        Text(
-          '---OR---',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
+          SizedBox(
+            height: this._ownSize.height * 0.03,
           ),
-        ),
-        SizedBox(
-          height: this._ownSize.height * 0.03,
-        ),
-        Row(
-          children: <Widget>[
-            Expanded(flex: 1, child: this._renderLoginWithFacbook()),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(flex: 1, child: this._renderLoginWithGoogle()),
-          ],
-        ),
-      ],
+          Row(
+            children: <Widget>[
+              Expanded(flex: 1, child: this._renderLoginWithFacbook()),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(flex: 1, child: this._renderLoginWithGoogle()),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    this._localisedValues =
-        (Nvm.getInstance().global as AppModel).localisedValues;
     return Scaffold(
       key: this._scaffoldKey,
       backgroundColor: Colors.grey[200],
@@ -301,7 +423,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       builder: (context) => LoadingWidget(),
     );
 
-    // TODO: Hardcode to work
+    // TODO: Hard code for working
     final String userNameExpected = 'admin';
     final String passwordExpected = 'admin';
 
@@ -334,7 +456,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   void _navigateForgotPasswordScreen() {}
 
-  void _navigateSignUpScreen() {}
+  void _registerAccount() {}
 
   String _validateUserNameAndPassword(String userName, String password) {
     if (userName.isEmpty) {
