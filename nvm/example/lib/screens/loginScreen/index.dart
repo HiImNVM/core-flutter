@@ -4,6 +4,7 @@ import 'package:example/constants.dart';
 import 'package:example/models/index.dart';
 import 'package:example/screens/loginScreen/constants.dart';
 import 'package:example/screens/loginScreen/type.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -41,7 +42,6 @@ class _LoginWidgetState extends State<LoginWidget> {
         (Nvm.getInstance().global as AppModel).localisedValues;
 
     final double heightContainerTab = this._ownSize.height * 0.3;
-
     this._tabs = [
       Tabbar(
         tab: Tab(
@@ -144,7 +144,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                 controller: this._newUserNameCtrl,
                 decoration: InputDecoration(
                   hintText: hintNameNewUserName,
-                  labelText: hintNameNewUserName,
                   prefixIcon: Icon(Icons.account_circle),
                 ),
                 textInputAction: TextInputAction.done)),
@@ -159,7 +158,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                 controller: this._newPasswordCtrl,
                 decoration: InputDecoration(
                   hintText: hintNamePassword,
-                  labelText: hintNamePassword,
                   prefixIcon: Icon(Icons.vpn_key),
                 ),
                 textInputAction: TextInputAction.done)),
@@ -174,7 +172,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                 controller: this._confirmPasswordCtrl,
                 decoration: InputDecoration(
                   hintText: hintNameConfirmPassword,
-                  labelText: hintNameConfirmPassword,
                   prefixIcon: Icon(Icons.vpn_key),
                 ),
                 textInputAction: TextInputAction.done)),
@@ -273,7 +270,6 @@ class _LoginWidgetState extends State<LoginWidget> {
           controller: this._userNameCtrl,
           decoration: InputDecoration(
             hintText: hintName,
-            labelText: hintName,
             prefixIcon: Icon(Icons.account_circle),
           ),
           textInputAction: TextInputAction.done),
@@ -456,7 +452,12 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   void _navigateForgotPasswordScreen() {}
 
-  void _registerAccount() {}
+  void _registerAccount() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => LoadingWidget(),
+    );
+  }
 
   String _validateUserNameAndPassword(String userName, String password) {
     if (userName.isEmpty) {
@@ -529,7 +530,6 @@ class _PasswordWidgetState extends State<PasswordWidget> {
         obscureText: !this.widget.isShowPassword,
         decoration: InputDecoration(
           hintText: '${this.widget.hintName}',
-          labelText: '${this.widget.hintName}',
           prefixIcon: Icon(Icons.vpn_key),
           suffix: GestureDetector(
             onTap: () => this.setState(
