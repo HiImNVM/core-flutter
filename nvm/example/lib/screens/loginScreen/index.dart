@@ -423,7 +423,7 @@ class _LoginWidgetState extends State<LoginWidget> {
     final String userNameExpected = 'admin';
     final String passwordExpected = 'admin';
 
-    final bool result = await Future.delayed(Duration(seconds: 5), () {
+    final bool result = await Future.delayed(Duration(seconds: 2), () {
       if (this._userNameCtrl.text == userNameExpected &&
           this._passwordCtrl.text == passwordExpected) {
         return true;
