@@ -84,7 +84,8 @@ class NvmLoading extends StatefulWidget {
   final List<Color> colors;
   final Duration duration;
 
-  NvmLoading({Key key, this.colors, this.duration}) : super(key: key);
+  NvmLoading({Key key, @required this.colors, @required this.duration})
+      : super(key: key);
 
   @override
   _NvmLoadingState createState() =>
