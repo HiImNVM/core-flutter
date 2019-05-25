@@ -2,6 +2,8 @@ class UserModel {
   String id;
   String image;
   String fullName;
+  String latestMessage;
+  int timeSent;
 
   UserModel({
     this.fullName,
@@ -17,5 +19,7 @@ class UserModel {
     this.id = json['id'];
     this.fullName = json['name'];
     this.image = json['image'];
+    this.latestMessage = json['latestMessage'];
+    this.timeSent = json['timeSent'];
   }
 }

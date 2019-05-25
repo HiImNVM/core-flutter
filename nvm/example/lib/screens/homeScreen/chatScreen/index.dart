@@ -3,6 +3,7 @@ import 'package:example/components/loader/index.dart';
 import 'package:example/models/index.dart';
 import 'package:example/models/user.dart';
 import 'package:example/screens/homeScreen/chatScreen/style.dart';
+import 'package:example/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:nvm/nvm.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -90,26 +91,67 @@ class _ChaterWidgetState extends State<ChaterWidget> {
     );
   }
 
-  Widget _renderName(String name) {
+  Widget _renderNameAndMessage(String name, String message) {
     final String currentName =
         (name == null || name.isEmpty) ? 'Username Default' : name;
 
-    return Text(
-      '$currentName',
-      style: fullNameTextStyle,
+    final String currentMessage = (message == null || message.isEmpty)
+        ? 'Chưa có tin nhắn mới'
+        : Utils.getInstance()
+            .convertShortStringWithAppendChars(30, message, '...');
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          '$currentName',
+          textAlign: TextAlign.start,
+          style: fullNameTextStyle,
+        ),
+        Text(
+          '$currentMessage',
+          style: messageTextStyle,
+        ),
+      ],
+    );
+  }
+
+  Widget _renderTime(int time) {
+    final String formattedTime =
+        Utils.getInstance().convertMiliToTimeFormat(time, 'HH:mm');
+    return Container(
+      alignment: Alignment.topCenter,
+      child: Text(
+        '$formattedTime',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 
   Widget _renderUser(UserModel user, Animation<double> animation) {
     return FadeTransition(
       opacity: animation,
-      child: Row(
+      child: Column(
         children: <Widget>[
-          Expanded(flex: 0, child: this._renderAvatar(user.image)),
-          SizedBox(
-            width: 10,
+          Row(
+            children: <Widget>[
+              Expanded(flex: 0, child: this._renderAvatar(user.image)),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                  flex: 1,
+                  child: this._renderNameAndMessage(
+                      user.fullName, user.latestMessage)),
+              Expanded(flex: 0, child: this._renderTime(user.timeSent)),
+            ],
           ),
-          Expanded(flex: 1, child: this._renderName(user.fullName)),
+          SizedBox(
+            height: 20,
+          ),
         ],
       ),
     );
