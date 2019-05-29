@@ -44,7 +44,7 @@ void _setupSharedPreferences(Nvm app) async {
 void _setupRoutes(Nvm app) {
   final AppModel appModel = (app.global as AppModel);
   appModel.routes = (routeSetting) {
-    final Map<String, dynamic> arguments = routeSetting.arguments;
+    final dynamic arguments = routeSetting.arguments;
     final String routeName = routeSetting.name;
     Widget widget;
 
