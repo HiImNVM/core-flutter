@@ -1,4 +1,5 @@
 import 'package:example/constants.dart';
+import 'package:example/screens/homeScreen/chatScreen/chatContentScreen/index.dart';
 import 'package:example/screens/homeScreen/index.dart';
 import 'package:flutter/services.dart';
 import 'package:example/screens/loginScreen/index.dart';
@@ -25,4 +26,7 @@ int configRequestTimeOut = 8;
 Map<String, Function> configRoutes = {
   '/home': () => HomeWidget(),
   '/login': () => LoginWidget(),
+  '/chat': (user) => ChatContentWidget(
+        user: user,
+      ),
 };

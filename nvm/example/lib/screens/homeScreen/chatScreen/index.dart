@@ -72,22 +72,25 @@ class _ChaterWidgetState extends State<ChaterWidget> {
   final int MAX_USER = 20;
 
   Widget _renderAvatar(String imagePath) {
-    if (imagePath == null || imagePath.isEmpty) {
-      return CircleAvatar(
-        backgroundImage: AssetImage('assets/images/user-default.png'),
-      );
-    }
-
-    return CircleAvatar(
-      radius: 20,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: CachedNetworkImage(
-          errorWidget: (context, url, error) => Icon(Icons.error),
-          placeholder: (context, message) => CircularProgressIndicator(),
-          imageUrl: '$imagePath',
-        ),
-      ),
+    return Hero(
+      tag: imagePath,
+      transitionOnUserGestures: true,
+      child: (imagePath == null || imagePath.isEmpty)
+          ? CircleAvatar(
+              backgroundImage: AssetImage('assets/images/user-default.png'),
+            )
+          : CircleAvatar(
+              radius: 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: CachedNetworkImage(
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  placeholder: (context, message) =>
+                      CircularProgressIndicator(),
+                  imageUrl: '$imagePath',
+                ),
+              ),
+            ),
     );
   }
 
@@ -132,27 +135,30 @@ class _ChaterWidgetState extends State<ChaterWidget> {
   }
 
   Widget _renderUser(UserModel user, Animation<double> animation) {
-    return FadeTransition(
-      opacity: animation,
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(flex: 0, child: this._renderAvatar(user.image)),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                  flex: 1,
-                  child: this._renderNameAndMessage(
-                      user.fullName, user.latestMessage)),
-              Expanded(flex: 0, child: this._renderTime(user.timeSent)),
-            ],
-          ),
-          SizedBox(
-            height: 20,
-          ),
-        ],
+    return InkWell(
+      onTap: () => this._navigateToChatScreen(user),
+      child: FadeTransition(
+        opacity: animation,
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(flex: 0, child: this._renderAvatar(user.image)),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                    flex: 1,
+                    child: this._renderNameAndMessage(
+                        user.fullName, user.latestMessage)),
+                Expanded(flex: 0, child: this._renderTime(user.timeSent)),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -216,8 +222,9 @@ class _ChaterWidgetState extends State<ChaterWidget> {
       return;
     }
 
+    this._currentUsers..addAll(newUsers);
+
     newUsers.forEach((user) {
-      this._currentUsers.add(user);
       this
           ._keyAnimatedUsers
           .currentState
@@ -235,4 +242,7 @@ class _ChaterWidgetState extends State<ChaterWidget> {
   void _registerScroll() {
     this._scrollController.addListener(this._changePositionScroll);
   }
+
+  void _navigateToChatScreen(UserModel user) =>
+      Navigator.pushNamed(context, '/chat', arguments: user);
 }
