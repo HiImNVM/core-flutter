@@ -22,5 +22,6 @@
     "CHATCONTENT_SCREEN_TITLE_IMAGE": "Hình ảnh",
     "CHATCONTENT_SCREEN_DESCRIPTION_IMAGE": "Chia sẽ những hình ảnh",
     "CHATCONTENT_SCREEN_TITLE_FILE": "Tập tin",
-    "CHATCONTENT_SCREEN_DESCRIPTION_FILE": "Chia sẽ những tập tin"
+    "CHATCONTENT_SCREEN_DESCRIPTION_FILE": "Chia sẽ những tập tin",
+    "CHATCONTENT_SCREEN_NO_MESSAGE": "Chưa có tin nhắn mới"
 }

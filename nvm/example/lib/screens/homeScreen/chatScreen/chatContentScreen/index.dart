@@ -19,35 +19,37 @@ class ChatContentWidget extends StatelessWidget {
 
   Widget _renderAppBar(String nameUser, String imagePath) {
     return AppBar(
-      backgroundColor: Colors.white,
-      centerTitle: false,
-      title: Padding(
-        padding: const EdgeInsets.only(bottom: 5),
-        child: Text(
-          '$nameUser',
-          style: fullNameTextStyle,
-        ),
-      ),
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 5, bottom: 5),
-        child: Hero(
-          tag: imagePath,
-          child: (imagePath == null || imagePath.isEmpty)
-              ? CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/user-default.png'),
-                )
-              : CircleAvatar(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: CachedNetworkImage(
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      placeholder: (context, message) =>
-                          CircularProgressIndicator(),
-                      imageUrl: '$imagePath',
+      backgroundColor: Colors.blue,
+      centerTitle: true,
+      title: Row(
+        children: <Widget>[
+          Hero(
+            tag: imagePath,
+            child: (imagePath == null || imagePath.isEmpty)
+                ? CircleAvatar(
+                    backgroundImage:
+                        AssetImage('assets/images/user-default.png'),
+                  )
+                : CircleAvatar(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: CachedNetworkImage(
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        placeholder: (context, message) =>
+                            CircularProgressIndicator(),
+                        imageUrl: '$imagePath',
+                      ),
                     ),
                   ),
-                ),
-        ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            '$nameUser',
+            style: fullNameTextStyle,
+          ),
+        ],
       ),
     );
   }
@@ -153,7 +155,7 @@ class ChatContentWidget extends StatelessWidget {
     ];
 
     return Container(
-      color: Colors.grey[200],
+      color: Colors.blue,
       height: height,
       child: ListView.builder(
         itemCount: _medias.length + 1,
@@ -173,17 +175,20 @@ class ChatContentWidget extends StatelessWidget {
       children: <Widget>[
         Text(
           '$name',
-          style: fullNameTextStyle,
+          style: titleMediaStyle,
         ),
         SizedBox(
           height: 5,
         ),
-        Text('$description'),
+        Text(
+          '$description',
+          style: descriptionMediaStyle,
+        ),
         SizedBox(
           height: 5,
         ),
         Divider(
-          color: Colors.black,
+          color: Colors.white,
         ),
       ],
     );
@@ -195,6 +200,7 @@ class ChatContentWidget extends StatelessWidget {
         Align(
           alignment: Alignment.bottomRight,
           child: IconButton(
+            color: Colors.white,
             onPressed: () => Navigator.pop(context),
             icon: Icon(Icons.close),
           ),

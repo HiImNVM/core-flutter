@@ -1,4 +1,18 @@
 import 'package:flutter/material.dart';
 
+final TextStyle baseTextStyle = TextStyle(
+  fontWeight: FontWeight.bold,
+);
+
 final TextStyle fullNameTextStyle =
-    TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20);
+    baseTextStyle.copyWith(color: Colors.white, fontSize: 20);
+
+final TextStyle titleMediaStyle = baseTextStyle.copyWith(
+  color: Colors.white,
+  fontSize: 18,
+);
+
+final TextStyle descriptionMediaStyle = titleMediaStyle.copyWith(
+  color: Colors.grey[400],
+  fontSize: 14,
+);

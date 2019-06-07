@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:example/components/loader/index.dart';
+import 'package:example/constants.dart';
 import 'package:example/models/index.dart';
 import 'package:example/models/user.dart';
 import 'package:example/screens/homeScreen/chatScreen/style.dart';
@@ -8,12 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:nvm/nvm.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class ChatWidget extends StatefulWidget {
-  @override
-  _ChatWidgetState createState() => _ChatWidgetState();
-}
-
-class _ChatWidgetState extends State<ChatWidget> {
+class ChatWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,12 +25,8 @@ class _ChatWidgetState extends State<ChatWidget> {
         successBuilder: (context, datas) {
           final List<UserModel> users = UserModel.parseJsonToListObjects(datas);
 
-          return RefreshIndicator(
-            child: ChaterWidget(
-              users: users,
-              key: UniqueKey(),
-            ),
-            onRefresh: this._refreshUsers,
+          return ChaterWidget(
+            users: users,
           );
         },
       ),
@@ -47,18 +39,14 @@ class _ChatWidgetState extends State<ChatWidget> {
           url: '/users',
         );
   }
-
-  Future<void> _refreshUsers() async =>
-      await Future.delayed(Duration(seconds: 1), () => this.setState(() {}));
 }
 
 class ChaterWidget extends StatefulWidget {
   final List<UserModel> users;
 
   ChaterWidget({
-    Key key,
     this.users,
-  }) : super(key: key);
+  });
 
   @override
   _ChaterWidgetState createState() => _ChaterWidgetState();
@@ -95,13 +83,17 @@ class _ChaterWidgetState extends State<ChaterWidget> {
   }
 
   Widget _renderNameAndMessage(String name, String message) {
-    final String currentName =
-        (name == null || name.isEmpty) ? 'Username Default' : name;
+    final int maxChars = 30;
+    final String charsAppend = '...';
+
+    final String currentName = Utils.getInstance()
+        .convertShortStringWithAppendChars(maxChars, name, charsAppend);
 
     final String currentMessage = (message == null || message.isEmpty)
-        ? 'Chưa có tin nhắn mới'
+        ? (Nvm.getInstance().global as AppModel)
+            .localisedValues[CONSTANT_CHATCONTENT_SCREEN_NO_MESSAGE]
         : Utils.getInstance()
-            .convertShortStringWithAppendChars(30, message, '...');
+            .convertShortStringWithAppendChars(maxChars, message, charsAppend);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -222,9 +214,8 @@ class _ChaterWidgetState extends State<ChaterWidget> {
       return;
     }
 
-    this._currentUsers..addAll(newUsers);
-
     newUsers.forEach((user) {
+      this._currentUsers.add(user);
       this
           ._keyAnimatedUsers
           .currentState
