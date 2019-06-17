@@ -86,8 +86,10 @@ class _ChaterWidgetState extends State<ChaterWidget> {
     final int maxChars = 30;
     final String charsAppend = '...';
 
-    final String currentName = Utils.getInstance()
-        .convertShortStringWithAppendChars(maxChars, name, charsAppend);
+    final String currentName = (name == null || name.isEmpty)
+        ? ''
+        : Utils.getInstance()
+            .convertShortStringWithAppendChars(maxChars, name, charsAppend);
 
     final String currentMessage = (message == null || message.isEmpty)
         ? (Nvm.getInstance().global as AppModel)
