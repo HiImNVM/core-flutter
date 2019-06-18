@@ -15,6 +15,7 @@ import '../../../../constants.dart';
 
 class ChatContentWidget extends StatelessWidget {
   final UserModel user;
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   final TextEditingController _inputController = TextEditingController();
   final FocusNode _focusInput = FocusNode();
   final List<_MediaModal> _medias = [
@@ -35,6 +36,7 @@ class ChatContentWidget extends StatelessWidget {
       type: ImageSource.camera,
     ),
   ];
+  List<MessageModel> _messages;
 
   ChatContentWidget({
     this.user,
@@ -144,122 +146,49 @@ class ChatContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _renderMessages() {
-    return Flexible(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: NvmFutureBuilder(
-            future: this._loadMessage(),
-            loadingBuilder: (context) => Center(
-                  child: LoadingWidget(),
-                ),
-            errorBuilder: (context, error) {},
-            successBuilder: (context, datas) {
-              final List<MessageModel> messages =
-                  MessageModel.parseJsonToListObjects(datas);
-
-              return ListView.builder(
-                reverse: true,
-                itemCount: messages.length,
-                itemBuilder: (context, index) =>
-                    this._renderAMessage(context, messages, index),
-              );
-            }),
-      ),
-    );
-  }
-
-  Widget _renderAvatar() {
-    return Container(
-      margin: const EdgeInsets.only(right: 5),
-      child: CircleAvatar(
-        backgroundImage: AssetImage('assets/images/user-default.png'),
-      ),
-    );
-  }
-
-  Widget _renderAMessage(context, messages, index) {
-    final MessageModel messageModel = messages[index];
-    final bool isOwnerMessage = messageModel.isOwnerMessage;
-    final String message = messageModel.message ?? '';
-    final String time = messageModel.time != null
-        ? Utils.getInstance()
-            .convertMiliToTimeFormat(messageModel.time, 'HH:mm')
-        : '00:00';
-    final double marginVerticalMessage =
-        (Nvm.getInstance().global as AppModel).mediaQueryData.size.width * 0.2;
-
-    final EdgeInsets marginContainerMessage = isOwnerMessage
-        ? EdgeInsets.only(
-            bottom: 20,
-            left: marginVerticalMessage,
-          )
-        : EdgeInsets.only(
-            bottom: 20,
-            right: marginVerticalMessage,
-          );
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment:
-          isOwnerMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: <Widget>[
-        isOwnerMessage ? Container() : this._renderAvatar(),
-        Flexible(
-          child: Container(
-            margin: marginContainerMessage,
-            child: Column(
-              crossAxisAlignment: isOwnerMessage
-                  ? CrossAxisAlignment.end
-                  : CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: isOwnerMessage
-                      ? const EdgeInsets.only(
-                          right: 10,
-                        )
-                      : const EdgeInsets.only(
-                          left: 10,
-                        ),
-                  child: Text(
-                    '$time',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                    ),
+  Widget _renderMessages() => Flexible(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: NvmFutureBuilder(
+              future: this._loadMessage(),
+              loadingBuilder: (context) => Center(
+                    child: LoadingWidget(),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: isOwnerMessage ? Colors.blue : Colors.grey[300],
-                  ),
-                  child: Text(
-                    '$message',
-                    style: TextStyle(
-                      color: isOwnerMessage ? Colors.white : Colors.black,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              errorBuilder: (context, error) {},
+              successBuilder: (context, datas) {
+                this._messages = datas == null
+                    ? <MessageModel>[]
+                    : MessageModel.parseJsonToListObjects(datas);
+
+                return MessageItemWidget(
+                  listKey: this._listKey,
+                  messages: this._messages,
+                );
+              }),
         ),
-      ],
-    );
-  }
+      );
 
   Widget _renderMedias(context) {
     final double height =
-        (Nvm.getInstance().global as AppModel).mediaQueryData.size.height * 0.3;
+        (Nvm.getInstance().global as AppModel).mediaQueryData.size.height * 0.4;
+
     return Container(
-      height: height,
       color: Colors.blue,
-      child: ListView.builder(
-        itemCount: this._medias.length + 1,
-        itemBuilder: (context, index) =>
-            this._renderMedia(context, this._medias, index),
+      height: height,
+      child: Column(
+        children: <Widget>[
+          this._renderButtonCloseBottom(context),
+          Expanded(
+            flex: 1,
+            child: Container(
+              child: ListView.builder(
+                itemCount: this._medias.length,
+                itemBuilder: (context, index) =>
+                    this._renderMedia(context, this._medias, index),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -294,26 +223,21 @@ class ChatContentWidget extends StatelessWidget {
   }
 
   Widget _renderButtonCloseBottom(context) {
-    return Stack(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        Align(
-          alignment: Alignment.bottomRight,
-          child: IconButton(
-            color: Colors.white,
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.close),
-          ),
+        IconButton(
+          alignment: Alignment.topRight,
+          color: Colors.white,
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.close),
         ),
       ],
     );
   }
 
   Widget _renderMedia(context, _medias, index) {
-    if (index == 0) {
-      return this._renderButtonCloseBottom(context);
-    }
-
-    final _MediaModal currentMediaModal = _medias[--index];
+    final _MediaModal currentMediaModal = _medias[index];
 
     return InkWell(
       onTap: () => this._openMediums(context, currentMediaModal.type),
@@ -340,7 +264,7 @@ class ChatContentWidget extends StatelessWidget {
   Widget _renderButtonSend() {
     return IconButton(
       icon: Icon(Icons.send),
-      onPressed: () {},
+      onPressed: () => this._createNewMessage(this._inputController.text),
       color: Colors.blue,
       iconSize: 35,
     );
@@ -365,6 +289,18 @@ class ChatContentWidget extends StatelessWidget {
     this._focusInput.unfocus();
   }
 
+  void _clearInputText() {
+    if (this._inputController == null) {
+      return;
+    }
+
+    this._inputController.clear();
+  }
+
+  void _afterSendMessage() {
+    this._clearInputText();
+  }
+
   void _showBottom(context) {
     this._unFocusInput();
 
@@ -381,11 +317,7 @@ class ChatContentWidget extends StatelessWidget {
       return;
     }
 
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Image.file(file);
-        });
+    this._createNewMessage(file);
   }
 
   Future<dynamic> _loadMessage() async {
@@ -393,6 +325,147 @@ class ChatContentWidget extends StatelessWidget {
           method: MethodEnum.GET,
           url: '/messages',
         );
+  }
+
+  void _createNewMessage(dynamic data) {
+    if (data == null) {
+      return;
+    }
+
+    if (data is String) {
+      final String text = data;
+      if (text.isEmpty) {
+        return;
+      }
+
+      final int indexAdd = 0;
+      this._messages.insert(
+          indexAdd,
+          MessageModel(
+            id: UniqueKey().toString(),
+            isOwnerMessage: true,
+            time: DateTime.now().millisecondsSinceEpoch,
+            message: text,
+          ));
+
+      this
+          ._listKey
+          .currentState
+          .insertItem(indexAdd, duration: Duration(milliseconds: 500));
+
+      this._afterSendMessage();
+    }
+
+    // TODO: Handle message with file image
+  }
+}
+
+class MessageItemWidget extends StatefulWidget {
+  final List<MessageModel> messages;
+  final GlobalKey<AnimatedListState> listKey;
+
+  MessageItemWidget({
+    this.messages,
+    this.listKey,
+  });
+
+  @override
+  _MessageItemWidgetState createState() => _MessageItemWidgetState();
+}
+
+class _MessageItemWidgetState extends State<MessageItemWidget> {
+  Widget _renderAvatar() {
+    return Container(
+      margin: const EdgeInsets.only(right: 5),
+      child: CircleAvatar(
+        backgroundImage: AssetImage('assets/images/user-default.png'),
+      ),
+    );
+  }
+
+  Widget _renderAMessage(context, index, animation) {
+    final MessageModel messageModel = this.widget.messages[index];
+    final bool isOwnerMessage = messageModel.isOwnerMessage;
+    final String message = messageModel.message ?? '';
+    final String time = messageModel.time != null
+        ? Utils.getInstance()
+            .convertMiliToTimeFormat(messageModel.time, 'HH:mm')
+        : '00:00';
+    final double marginVerticalMessage =
+        (Nvm.getInstance().global as AppModel).mediaQueryData.size.width * 0.2;
+
+    final EdgeInsets marginContainerMessage = isOwnerMessage
+        ? EdgeInsets.only(
+            bottom: 20,
+            left: marginVerticalMessage,
+          )
+        : EdgeInsets.only(
+            bottom: 20,
+            right: marginVerticalMessage,
+          );
+
+    return FadeTransition(
+      opacity: animation,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment:
+            isOwnerMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: <Widget>[
+          isOwnerMessage ? Container() : this._renderAvatar(),
+          Flexible(
+            child: Container(
+              margin: marginContainerMessage,
+              child: Column(
+                crossAxisAlignment: isOwnerMessage
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: isOwnerMessage
+                        ? const EdgeInsets.only(
+                            right: 10,
+                          )
+                        : const EdgeInsets.only(
+                            left: 10,
+                          ),
+                    child: Text(
+                      '$time',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: isOwnerMessage ? Colors.blue : Colors.grey[300],
+                    ),
+                    child: Text(
+                      '$message',
+                      style: TextStyle(
+                        color: isOwnerMessage ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedList(
+      key: this.widget.listKey,
+      reverse: true,
+      initialItemCount: this.widget.messages.length,
+      itemBuilder: this._renderAMessage,
+    );
   }
 }
 
