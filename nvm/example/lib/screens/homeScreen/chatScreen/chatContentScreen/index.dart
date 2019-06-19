@@ -332,13 +332,14 @@ class ChatContentWidget extends StatelessWidget {
       return;
     }
 
+    final int indexAdd = 0;
+
     if (data is String) {
       final String text = data;
       if (text.isEmpty) {
         return;
       }
 
-      final int indexAdd = 0;
       this._messages.insert(
           indexAdd,
           MessageModel(
@@ -354,9 +355,11 @@ class ChatContentWidget extends StatelessWidget {
           .insertItem(indexAdd, duration: Duration(milliseconds: 500));
 
       this._afterSendMessage();
-    }
+    } else if (data is File) {
+      final File file = data;
 
-    // TODO: Handle message with file image
+      return;
+    }
   }
 }
 

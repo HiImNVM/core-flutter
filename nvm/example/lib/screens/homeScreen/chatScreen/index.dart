@@ -42,7 +42,7 @@ class ChatWidget extends StatelessWidget {
 }
 
 class ChaterWidget extends StatefulWidget {
-  final List<UserModel> users;
+  List<UserModel> users;
 
   ChaterWidget({
     this.users,
@@ -128,30 +128,39 @@ class _ChaterWidgetState extends State<ChaterWidget> {
     );
   }
 
-  Widget _renderUser(UserModel user, Animation<double> animation) {
-    return InkWell(
-      onTap: () => this._navigateToChatScreen(user),
-      child: FadeTransition(
-        opacity: animation,
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(flex: 0, child: this._renderAvatar(user.image)),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    flex: 1,
-                    child: this._renderNameAndMessage(
-                        user.fullName, user.latestMessage)),
-                Expanded(flex: 0, child: this._renderTime(user.timeSent)),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+  Widget _renderUser(UserModel user, Animation<double> animation, int index) {
+    return Dismissible(
+      key: Key(user.id),
+      background: Container(
+        color: Colors.red,
+      ),
+      onDismissed: (dismissDirection) =>
+          this._dismissed(dismissDirection, index),
+      confirmDismiss: this._confirmDismiss,
+      child: InkWell(
+        onTap: () => this._navigateToChatScreen(user),
+        child: FadeTransition(
+          opacity: animation,
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(flex: 0, child: this._renderAvatar(user.image)),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: this._renderNameAndMessage(
+                          user.fullName, user.latestMessage)),
+                  Expanded(flex: 0, child: this._renderTime(user.timeSent)),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -172,7 +181,7 @@ class _ChaterWidgetState extends State<ChaterWidget> {
             controller: this._scrollController,
             itemBuilder: (context, index, animation) {
               final UserModel user = this._currentUsers[index];
-              return this._renderUser(user, animation);
+              return this._renderUser(user, animation, index);
             },
           )
         : Container();
@@ -238,4 +247,42 @@ class _ChaterWidgetState extends State<ChaterWidget> {
 
   void _navigateToChatScreen(UserModel user) =>
       Navigator.pushNamed(context, '/chat', arguments: user);
+
+  Future<bool> _confirmDismiss(_) async {
+    final dynamic localisedValues =
+        (Nvm.getInstance().global as AppModel).localisedValues;
+    final String title =
+        localisedValues[CONSTANT_CHAT_SCREEN_TITLE_ARE_YOU_SURE_TO_DELETE];
+    final String strYes = localisedValues[CONSTANT_CHAT_SCREEN_TITLE_OK];
+    final String strNo = localisedValues[CONSTANT_CHAT_SCREEN_TITLE_NO];
+
+    return await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+            title: Text('$title'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text('$strYes'),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text('$strNo'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _dismissed(DismissDirection dismissDirection, int indexItem) {
+    // TODO: Call API to delete
+
+    this.widget.users.removeAt(indexItem);
+    this._currentUsers.removeAt(indexItem);
+    this
+        ._keyAnimatedUsers
+        .currentState
+        .removeItem(indexItem, (context, animation) => Container());
+  }
 }
