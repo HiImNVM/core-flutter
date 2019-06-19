@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:example/models/index.dart';
 import 'package:example/screens/flashScreen/index.dart';
 import 'package:example/screens/homeScreen/index.dart';
@@ -6,6 +8,7 @@ import 'package:example/setup.dart';
 import 'package:example/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:nvm/nvm.dart';
+import 'package:sentry/sentry.dart';
 
 import 'constants.dart';
 
@@ -19,19 +22,33 @@ void main() async {
   await Future.wait(
       setupAll(app).map((fn) async => await Utils.getInstance().futureFn(fn)));
 
-  String title = (app.global as AppModel).env[CONSTANT_APP_NAME];
-  bool mode = (app.global as AppModel).env[CONSTANT_IS_DEBUG];
-  RouteFactory routes = (app.global as AppModel).routes;
+  final String title = (app.global as AppModel).env[CONSTANT_APP_NAME];
+  final bool debugMode = (app.global as AppModel).env[CONSTANT_IS_DEBUG];
+  final RouteFactory routes = (app.global as AppModel).routes;
+  final SentryClient sentryClient = (app.global as AppModel).sentryClient;
 
   Widget ownApp = AppWidget();
   print(' Init AppWidget succeed and START ===> ');
 
-  runApp(MaterialApp(
-    title: title,
-    debugShowCheckedModeBanner: mode,
-    home: ownApp,
-    onGenerateRoute: routes,
-  ));
+  runZoned(
+    () => runApp(MaterialApp(
+          title: title,
+          debugShowCheckedModeBanner: debugMode,
+          home: ownApp,
+          onGenerateRoute: routes,
+        )),
+    onError: (error, stackTrace) {
+      if (debugMode) {
+        print(stackTrace);
+        return;
+      }
+
+      sentryClient.captureException(
+        exception: error,
+        stackTrace: stackTrace,
+      );
+    },
+  );
 }
 
 class AppWidget extends StatelessWidget {

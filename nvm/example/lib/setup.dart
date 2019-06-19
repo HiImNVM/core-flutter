@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:example/config.dart';
 import 'package:example/constants.dart';
 import 'package:example/models/index.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nvm/nvm.dart';
+import 'package:sentry/sentry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void _setupENV(Nvm app) {
@@ -43,6 +46,8 @@ void _setupSharedPreferences(Nvm app) async {
 
 void _setupRoutes(Nvm app) {
   final AppModel appModel = (app.global as AppModel);
+
+  print(' Setup routes succeed. ');
   appModel.routes = (routeSetting) {
     final dynamic arguments = routeSetting.arguments;
     final String routeName = routeSetting.name;
@@ -58,6 +63,25 @@ void _setupRoutes(Nvm app) {
   };
 }
 
+void _setupSentryClient(Nvm app) {
+  final AppModel appModel = (app.global as AppModel);
+  final String dsn = appModel.env[CONSTANT_SENTRY_DNS];
+  final bool isDebug = appModel.env[CONSTANT_IS_DEBUG];
+
+  // This captures errors reported by the Flutter framework.
+  FlutterError.onError = (FlutterErrorDetails details) async {
+    if (isDebug) {
+      FlutterError.dumpErrorToConsole(details);
+      return;
+    }
+    Zone.current.handleUncaughtError(details.exception, details.stack);
+  };
+
+  appModel.sentryClient = dsn.isEmpty ? null : SentryClient(dsn: dsn);
+
+  print(' Setup sentryClient succeed. ');
+}
+
 List<Function> setupAll(Nvm app) {
   return [
     () => _setupENV(app),
@@ -65,5 +89,6 @@ List<Function> setupAll(Nvm app) {
     () => _setupApp(app),
     () => _setupRequest(app),
     () => _setupRoutes(app),
+    () => _setupSentryClient(app),
   ];
 }

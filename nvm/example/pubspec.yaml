@@ -25,6 +25,7 @@ dependencies:
   cached_network_image: 0.8.0
   image_picker: 0.6.0+9
   intl: 0.15.8
+  sentry: 2.2.0
   nvm:
     path: ../
 

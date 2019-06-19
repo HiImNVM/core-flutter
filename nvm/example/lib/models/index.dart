@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:nvm/api.dart';
+import 'package:sentry/sentry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppModel {
@@ -9,6 +10,7 @@ class AppModel {
   Map<String, dynamic> env;
   NvmAPI request;
   RouteFactory routes;
+  SentryClient sentryClient;
 
   AppModel({
     this.sharedPreferences,
@@ -17,5 +19,6 @@ class AppModel {
     this.env,
     this.request,
     this.routes,
+    this.sentryClient,
   });
 }

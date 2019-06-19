@@ -57,3 +57,6 @@ const CONSTANT_IMAGES_APP_ICON = 'assets/images/app-icon.jpg';
 
 // SERVER
 const CONSTANT_SERVER_URL_NAME = 'CONSTANT_SERVER_URL_NAME';
+
+// Sentry
+const CONSTANT_SENTRY_DNS = 'CONSTANT_SENTRY_DNS';
