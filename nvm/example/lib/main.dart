@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:example/models/index.dart';
 import 'package:example/screens/flashScreen/index.dart';
 import 'package:example/screens/homeScreen/index.dart';
