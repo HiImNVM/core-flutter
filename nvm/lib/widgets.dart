@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+// NvmFutureBuilder
 typedef ErrorBuilder = Widget Function(BuildContext context, String error);
 typedef LoadingBuilder = Widget Function(BuildContext context);
 typedef SuccessBuilder = Widget Function(BuildContext context, dynamic data);
@@ -36,6 +37,7 @@ class NvmFutureBuilder<T> extends FutureBuilder<T> {
             });
 }
 
+// NvmWillPopScope
 typedef ResultWillPop = bool Function(bool isWillPop);
 
 class NvmWillPopScope extends WillPopScope {
@@ -80,6 +82,7 @@ class NvmWillPopScope extends WillPopScope {
             });
 }
 
+// NvmLoading
 class NvmLoading extends StatefulWidget {
   final List<Color> colors;
   final Duration duration;
@@ -167,6 +170,7 @@ class _NvmLoadingState extends State<NvmLoading>
   }
 }
 
+// NvmRotatingPlane
 class NvmRotatingPlane extends StatefulWidget {
   NvmRotatingPlane({
     Key key,
@@ -248,5 +252,66 @@ class _NvmRotatingPlaneState extends State<NvmRotatingPlane>
               color: widget.color,
             ),
           );
+  }
+}
+
+// NvmAnimatedListController
+typedef RemovedItemBuilder = Widget Function(
+    BuildContext context, Animation<double> animation);
+
+abstract class IAnimatedListAction<T> {
+  T removeAt(int index, [Duration duration]);
+  T operator [](int index);
+  void insert(int index, T item, [Duration duration]);
+  int indexOf(T item);
+}
+
+class NvmAnimatedListController<T> extends IAnimatedListAction<T> {
+  NvmAnimatedListController({
+    @required this.listKey,
+    @required this.removedItemBuilder,
+    Iterable<T> initialItems,
+  })  : assert(listKey != null),
+        assert(removedItemBuilder != null),
+        _items = List<T>.from(initialItems ?? <T>[]);
+
+  final GlobalKey<AnimatedListState> listKey;
+  final RemovedItemBuilder removedItemBuilder;
+  final List<T> _items;
+
+  AnimatedListState get animatedListState => this.listKey.currentState;
+  int get length => this._items.length;
+  List<T> get getItems => this._items;
+
+  @override
+  T operator [](int index) => this._items[index];
+
+  @override
+  int indexOf(T item) => this._items.indexOf(item);
+
+  @override
+  void insert(int index, T item, [Duration duration]) {
+    if (item == null) {
+      return;
+    }
+
+    this._items.add(item);
+    this
+        .animatedListState
+        .insertItem(index, duration: duration ?? Duration(milliseconds: 500));
+  }
+
+  @override
+  T removeAt(int index, [Duration duration]) {
+    final T removedItem = this._items.removeAt(index);
+
+    if (removedItem != null) {
+      this.animatedListState.removeItem(
+            index,
+            removedItemBuilder,
+            duration: duration ?? Duration(milliseconds: 500),
+          );
+    }
+    return removedItem;
   }
 }
