@@ -53,11 +53,14 @@ class ChaterWidget extends StatefulWidget {
 }
 
 class _ChaterWidgetState extends State<ChaterWidget> {
-  final GlobalKey<AnimatedListState> _keyAnimatedUsers =
-      GlobalKey<AnimatedListState>();
   final ScrollController _scrollController = ScrollController();
-  List<UserModel> _currentUsers;
   final int MAX_USER = 20;
+
+  final NvmAnimatedListController<UserModel> _animatedListController =
+      NvmAnimatedListController<UserModel>(
+          listKey: GlobalKey<AnimatedListState>(),
+          initialItems: List<UserModel>(),
+          removedItemBuilder: (context, animation) => Container());
 
   Widget _renderAvatar(String imagePath) {
     return Hero(
@@ -174,13 +177,13 @@ class _ChaterWidgetState extends State<ChaterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return this._currentUsers.length > 0
+    return this._animatedListController.length > 0
         ? AnimatedList(
-            key: this._keyAnimatedUsers,
-            initialItemCount: this._currentUsers.length,
+            key: this._animatedListController.listKey,
+            initialItemCount: this._animatedListController.length,
             controller: this._scrollController,
             itemBuilder: (context, index, animation) {
-              final UserModel user = this._currentUsers[index];
+              final UserModel user = this._animatedListController[index];
               return this._renderUser(user, animation, index);
             },
           )
@@ -195,15 +198,14 @@ class _ChaterWidgetState extends State<ChaterWidget> {
 
   void _init() {
     this._registerScroll();
-    this._currentUsers = [];
     final List<UserModel> newUsers = this._caculateNewUsers();
     if (newUsers != null && newUsers.length > 0) {
-      this._currentUsers = newUsers;
+      this._animatedListController.getItems.addAll(newUsers);
     }
   }
 
   List<UserModel> _caculateNewUsers() {
-    final int currentUsersLength = this._currentUsers.length;
+    final int currentUsersLength = this._animatedListController.length;
     final int usersLength = this.widget.users.length;
 
     if (currentUsersLength >= usersLength) {
@@ -226,11 +228,7 @@ class _ChaterWidgetState extends State<ChaterWidget> {
     }
 
     newUsers.forEach((user) {
-      this._currentUsers.add(user);
-      this
-          ._keyAnimatedUsers
-          .currentState
-          .insertItem(0, duration: Duration(milliseconds: 500));
+      this._animatedListController.insert(0, user);
     });
   }
 
@@ -279,10 +277,6 @@ class _ChaterWidgetState extends State<ChaterWidget> {
     // TODO: Call API to delete
 
     this.widget.users.removeAt(indexItem);
-    this._currentUsers.removeAt(indexItem);
-    this
-        ._keyAnimatedUsers
-        .currentState
-        .removeItem(indexItem, (context, animation) => Container());
+    this._animatedListController.removeAt(indexItem);
   }
 }
